@@ -184,11 +184,8 @@ export default function Products() {
     useEffect(() => {
         if (!pool) return
 
-        let count = 0
-
         const h = pool.subscribeMany(RELAYS, FILTERS, {
             onevent(e) {
-                // console.log(++count, event)
                 setEvents(prev => [...prev, e])
             },
             oneose() {
@@ -200,7 +197,7 @@ export default function Products() {
     }, [pool])
 
     return (
-        <main className="grid gap-6 min-h-screen grid-cols-3 items-center justify-between p-24">
+        <main className="grid gap-6 bg-primary min-h-screen grid-cols-3 items-center justify-between p-24">
             {events.map(event => (
                 <Product key={event.id} event={event} />
             ))}

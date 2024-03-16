@@ -23,51 +23,53 @@ type ProductContentType = {
     }[]
 }
 
-type Props = {
-    event: Event
-}
+type ProductProps = { event: Event }
 
-function Tag(props: { tag: string[] }) {
+type TagProps = { tag: string[] }
+
+function Tag(props: TagProps) {
     if (props.tag[0] !== "t") return null
 
-    return <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">{props.tag[1]}</span>
+    return (
+        <span className="inline-block text-nowrap h-min bg-bitcoin text-secondary rounded-full px-3 py-1 text-xs font-semibold text-gray-700">
+            #{props.tag[1]}
+        </span>
+    )
 }
 
-export default function Product(props: Props) {
+export default function Product(props: ProductProps) {
     const product = props.event
     const content = JSON.parse(product.content) as ProductContentType
 
     const mainImage = content.images ? content.images[0] : null
 
-    console.log(product.tags)
-
     return (
-        <div className="h-96 bg-primary text-white grid rounded overflow-hidden shadow-xl px-6 py-4">
-            {/* {mainImage ? <img width={100} height={70} alt={content.name} src={mainImage} className="w-full" /> : null}{" "} */}
-            {/* TODO: Change to next/Image */}
-
+        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] content-between h-96 bg-secondary text-white rounded overflow-hidden shadow-xl px-6 py-4">
+            {/* TODO: Create carousel for images */}
             <div
                 className="w-full bg-center bg-no-repeat bg-contain h-32"
                 style={{
                     backgroundImage: `url(${
                         mainImage ??
                         // TODO: Get a better png, with less pixels (better performance/load time)
-                        "https://static.vecteezy.com/system/resources/previews/019/767/953/non_2x/bitcoin-logo-bitcoin-icon-transparent-free-png.png"
+                        "" // "https://static.vecteezy.com/system/resources/previews/019/767/953/non_2x/bitcoin-logo-bitcoin-icon-transparent-free-png.png"
                     })`,
                 }}
             />
 
-            <div className="">
-                <div className="font-bold text-xl mb-2">{content.name}</div>
-                <p className="text-gray-400">{content.description}</p> {/* TODO: Limit to 2 lines */}
-                <p className="text-gray-400">{content.currency}</p>
+            <div className="flex flex-col gap-2">
+                <div className="flex items-center h-14">
+                    <p className="font-bold text-xl line-clamp-2">{content.name}</p>
+                </div>
+                <div className="flex items-center h-[4.5rem]">
+                    <p className="text-gray-400 text-base line-clamp-3">{content.description}</p>
+                </div>
             </div>
-            <div className="text-xl">
-                <span className="">{content.price ?? 10000}</span>{" "}
+            <div className="flex flex-row gap-2 text-xl">
+                <span>{content.price ?? 10000}</span>
                 <span className="text-bitcoin">{content.currency.toLocaleUpperCase()}</span>
             </div>
-            <div className="">
-                {/* TODO: Limit to 1 line with horizontal scroll */}
+            <div className="flex h-6 self-end gap-2 flex-nowrap no-scrollbar no-wrap overflow-x-scroll">
                 {product.tags.map(tag => (
                     <Tag tag={tag} />
                 ))}
