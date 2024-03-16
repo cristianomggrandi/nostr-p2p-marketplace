@@ -10,8 +10,9 @@ const config: Config = {
             },
             colors: {
                 primary: "#1A042F",
-                secondary: "#F7931A",
+                secondary: "#",
                 contrast: "#DB3A34",
+                bitcoin: "#F7931A",
             },
         },
     },
