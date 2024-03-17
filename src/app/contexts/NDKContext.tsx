@@ -1,6 +1,6 @@
 "use client"
 
-import NDK from "@nostr-dev-kit/ndk"
+import NDK, { NDKNip07Signer } from "@nostr-dev-kit/ndk"
 import { createContext, useContext, useEffect } from "react"
 import { ContextProps } from "../types/ContextProps"
 
@@ -172,13 +172,9 @@ const ndk = new NDK({
     explicitRelayUrls: RELAYS,
 })
 
-async function connectToRelays() {
-    await ndk.connect()
-}
-
 export function NDKContextProvider(props: ContextProps) {
     useEffect(() => {
-        connectToRelays()
+        ndk.connect()
 
         localStorage.debug = "ndk:*"
     }, [])

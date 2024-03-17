@@ -12,7 +12,7 @@ const config: Config = {
                 primary: "#1A042F",
                 secondary: "#4B0082", // TODO: Test #4B0082, #483D8B, #4C2D6F, #7B3E92 and
                 contrast: "#DB3A34",
-                bitcoin: "#F7931A",
+                bitcoin: "#F7931A", // Opposite is #1A7EF7
                 testLightBlue: "#00CED1",
             },
         },

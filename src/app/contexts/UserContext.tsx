@@ -1,12 +1,13 @@
 "use client"
 
-import { NDKUser } from "@nostr-dev-kit/ndk"
+import { NDKNip07Signer, NDKUser } from "@nostr-dev-kit/ndk"
 import { createContext, useContext, useEffect, useState } from "react"
 import { ContextProps } from "../types/ContextProps"
 import useNDK from "./NDKContext"
 
 type UserContextType = {
     user: NDKUser | null
+    loginWithNIP07: () => void
 }
 
 const UserContext = createContext<UserContextType | null>(null)
@@ -14,22 +15,36 @@ const UserContext = createContext<UserContextType | null>(null)
 export function UserContextProvider(props: ContextProps) {
     const [user, setUser] = useState<NDKUser | null>(null)
 
+    useEffect(() => {
+        if (user)
+            user.fetchProfile().then(userProfile => {
+                console.log("userProfile:", userProfile)
+                if (!user) throw new Error("User profile not found")
+            })
+    }, [user])
+
     const ndk = useNDK()
 
-    useEffect(() => {
-        //TODO: Change to mine "npub1pptz0wg6w5hlnsquafthd00wtceshxu97mhdw0r53m4j9de9y8pqgq2amn" })
-        //TODO: Change to the user's
-        const user = ndk.getUser({ npub: "npub1lrnvvs6z78s9yjqxxr38uyqkmn34lsaxznnqgd877j4z2qej3j5s09qnw5" })
-        user.fetchProfile().then(() => setUser(user))
-    }, [])
+    const loginWithNIP07 = () => {
+        const nip07signer = new NDKNip07Signer()
+        ndk.signer = nip07signer
 
-    return <UserContext.Provider value={{ user }}>{props.children}</UserContext.Provider>
+        nip07signer.user().then(user => {
+            if (user.npub) {
+                setUser(user)
+            } else {
+                throw new Error("Failed to fetch for your user")
+            }
+        })
+    }
+
+    return <UserContext.Provider value={{ user, loginWithNIP07 }}>{props.children}</UserContext.Provider>
 }
 
 export default function useUser() {
     const context = useContext(UserContext)
 
-    if (!context) throw new Error("useNDK must be within a Context Provider")
+    if (!context) throw new Error("useUser must be within a Context Provider")
 
-    return context.user
+    return context
 }
