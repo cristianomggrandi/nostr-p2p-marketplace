@@ -1,27 +1,8 @@
-import { Event } from "nostr-tools"
+"use client"
 
-type ProductContentType = {
-    id: string
-    name: string
-    description: string
-    currency: string
-    price?: number
-    quantity?: number
-    images?: string[]
-    shipping?: {
-        id: string
-        name?: string
-        currency?: string
-        cost?: number
-        countries?: {
-            id: string
-            name: string
-            currency: string
-            cost: number
-            countries: string[]
-        }[]
-    }[]
-}
+import { ProductContentType } from "@/app/types/product"
+import Link from "next/link"
+import { Event } from "nostr-tools"
 
 type ProductProps = { event: Event }
 
@@ -50,22 +31,27 @@ function Tag(props: TagProps) {
     )
 }
 
-export default function Product(props: ProductProps) {
+export default function ProductCard(props: ProductProps) {
     const product = props.event
     const content = JSON.parse(product.content) as ProductContentType
+
+    console.log("prod", product, content)
 
     const mainImage = content.images ? content.images[0] : null
 
     return (
-        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] content-between h-96 bg-secondary text-white rounded-xl overflow-hidden shadow-2xlxl px-6 py-4">
+        <Link
+            href={"/product/" + content.id}
+            className="grid grid-rows-[min-content_min-content_min-content_min-content] content-between h-96 bg-secondary text-white rounded-xl overflow-hidden shadow-2xlxl px-6 py-4"
+        >
             {/* TODO: Create carousel for images */}
-            {mainImage ? (
+            {/* {mainImage ? (
                 <div style={{ backgroundImage: `url(${mainImage})` }} className="bg-center bg-no-repeat bg-contain h-32" />
             ) : (
-                <div className="flex justify-center">
-                    <BitcoinIcon />
-                </div>
-            )}
+            )} */}
+            <div className="flex justify-center">
+                <BitcoinIcon />
+            </div>
             <div className="flex flex-col gap-2">
                 <div className="flex items-center h-14">
                     <p className="font-bold text-xl line-clamp-2">{content.name}</p>
@@ -83,6 +69,6 @@ export default function Product(props: ProductProps) {
                     <Tag key={i} tag={tag} />
                 ))}
             </div>
-        </div>
+        </Link>
     )
 }

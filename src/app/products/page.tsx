@@ -1,21 +1,11 @@
 "use client"
 
-import { Event, Filter, SimplePool } from "nostr-tools"
+// TODO: Change to NDK
+import { Filter, SimplePool } from "nostr-tools"
 import { useEffect, useState } from "react"
-import Product from "./components/Product"
-
-const RELAYS = [
-    "wss://nos.lol",
-    "wss://dev-relay.nostrassets.com",
-    "wss://relay.nostrassets.com",
-    "wss://relay.varke.eu",
-    "wss://nostr.dogdogback.com",
-    "wss://nostr.neilalexander.dev",
-    "wss://nostr.rubberdoll.cc",
-    "wss://global-relay.cesc.trade",
-    "wss://relay.bitcoinbarcelona.xyz",
-    "wss://nostr-verif.slothy.win",
-]
+import { useFetchedEvents } from "../contexts/NDKContext"
+import RELAYS from "../utils/relays"
+import ProductCard from "./components/ProductCard"
 
 const FILTERS: Filter[] = [
     {
@@ -26,7 +16,7 @@ const FILTERS: Filter[] = [
 
 export default function Products() {
     const [pool, setPool] = useState<SimplePool | null>(null)
-    const [events, setEvents] = useState<Event[]>([])
+    const [fetchedEvents, setFetchedEvents] = useFetchedEvents()
 
     useEffect(() => {
         const pool = new SimplePool()
@@ -41,7 +31,7 @@ export default function Products() {
 
         const h = pool.subscribeMany(RELAYS, FILTERS, {
             onevent(e) {
-                setEvents(prev => [...prev, e])
+                setFetchedEvents(prev => [...prev, e])
             },
             oneose() {
                 h.close()
@@ -53,8 +43,8 @@ export default function Products() {
 
     return (
         <main className="grid gap-6 bg-primary min-h-screen grid-cols-3 items-center justify-between p-24">
-            {events.map(event => (
-                <Product key={event.id} event={event} />
+            {fetchedEvents.map(event => (
+                <ProductCard key={event.id} event={event} />
             ))}
         </main>
     )

@@ -15,19 +15,15 @@ export default function HeaderUser() {
             </div>
         )
 
+    const profileName = user.profile.name ? user.profile.name[0].toLocaleUpperCase() : "User"
+
     return (
         <div className="h-12 w-24 flex justify-center">
             <Link
                 href="/profile"
                 className="block h-12 w-12 bg-bitcoin text-xl text-secondary rounded-full leading-[48px] text-center overflow-hidden"
             >
-                {user.profile.image ? (
-                    <img width={48} height={48} src={user.profile.image} />
-                ) : user.profile.name ? (
-                    user.profile.name[0].toLocaleUpperCase()
-                ) : (
-                    "User"
-                )}
+                {user.profile.image ? <img width={48} height={48} src={user.profile.image} /> : profileName}
             </Link>
         </div>
     )
