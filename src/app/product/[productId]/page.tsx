@@ -16,7 +16,14 @@ export default function Product(props: Props) {
     const [latestEvent, setLatestEvent] = useState<NDKEvent>()
     const eventContent = latestEvent ? (JSON.parse(latestEvent.content) as ProductContentType) : null
 
-    const getProductDetails = () => {
+    // TODO: Save latestEvent on localStorage
+    const getProductDetails = async () => {
+        const eventCached = localStorage.getItem(props.params.productId)
+        if (eventCached) {
+            setLatestEvent(JSON.parse(eventCached) as NDKEvent)
+            return
+        }
+
         const matchingEventSet = new Set(
             fetchedEvents.filter(event => {
                 const content = JSON.parse(event.content) as ProductContentType
@@ -41,6 +48,8 @@ export default function Product(props: Props) {
 
         setLatestEvent(latestEvent)
 
+        localStorage.setItem(props.params.productId, JSON.stringify(await latestEvent.toNostrEvent()))
+
         console.log("latestEvent", latestEvent)
     }
 
@@ -51,11 +60,14 @@ export default function Product(props: Props) {
     if (!eventContent) return <div>No event</div>
 
     return (
-        <div>
-            <div>{eventContent.name}</div>
-            <div>{eventContent.description}</div>
-            <div>{eventContent.price}</div>
-            <div>{eventContent.currency}</div>
+        <div className="grid grid-row">
+            <div></div>
+            <div>
+                <div>{eventContent.name}</div>
+                <div>{eventContent.description}</div>
+                <div>{eventContent.price}</div>
+                <div>{eventContent.currency}</div>
+            </div>
         </div>
     )
 }
