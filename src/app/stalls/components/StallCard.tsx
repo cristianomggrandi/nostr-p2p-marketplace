@@ -1,11 +1,11 @@
 "use client"
 
 import BitcoinIcon from "@/app/components/BitcoinIcon"
-import { ProductContentType } from "@/app/types/nostrTypes"
+import { StallContentType } from "@/app/types/nostrTypes"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import Link from "next/link"
 
-type ProductProps = { event: NDKEvent }
+type StallProps = { event: NDKEvent }
 
 type TagProps = { tag: string[] }
 
@@ -19,22 +19,15 @@ function Tag(props: TagProps) {
     )
 }
 
-export default function ProductCard(props: ProductProps) {
-    const product = props.event
-    const content = JSON.parse(product.content) as ProductContentType
-
-    const mainImage = content.images ? content.images[0] : null
+export default function StallCard(props: StallProps) {
+    const stall = props.event
+    const content = JSON.parse(stall.content) as StallContentType
 
     return (
         <Link
-            href={"/product/" + content.id}
+            href={"/stall/" + content.id}
             className="grid grid-rows-[min-content_min-content_min-content_min-content] content-between h-96 bg-secondary text-white rounded-xl overflow-hidden shadow-2xlxl px-6 py-4"
         >
-            {/* TODO: Create carousel for images */}
-            {/* {mainImage ? (
-                <div style={{ backgroundImage: `url(${mainImage})` }} className="bg-center bg-no-repeat bg-contain h-32" />
-            ) : (
-            )} */}
             <div className="flex justify-center">
                 <BitcoinIcon />
             </div>
@@ -47,13 +40,7 @@ export default function ProductCard(props: ProductProps) {
                 </div>
             </div>
             <div className="flex flex-row gap-2 text-xl">
-                <span>{content.price ?? 10000}</span>
                 <span className="text-bitcoin uppercase">{content.currency}</span>
-            </div>
-            <div className="flex h-6 self-end gap-2 flex-nowrap no-scrollbar no-wrap overflow-x-scroll">
-                {product.tags.map((tag, i) => (
-                    <Tag key={i} tag={tag} />
-                ))}
             </div>
         </Link>
     )

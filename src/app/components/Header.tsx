@@ -14,7 +14,7 @@ export default function Header() {
                         <Link href="/products">Products</Link>
                     </li>
                     <li>
-                        <Link href="/products">Products</Link>
+                        <Link href="/stalls">Stalls</Link>
                     </li>
                     <li>
                         <Link href="/products">Products</Link>
