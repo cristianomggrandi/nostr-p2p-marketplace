@@ -1,7 +1,7 @@
 "use client"
 
 import BitcoinIcon from "@/app/components/BitcoinIcon"
-import { useFetchedEvents } from "@/app/contexts/NDKContext"
+import useFetchedEvents from "@/app/contexts/EventsContext"
 import { ProductContentType } from "@/app/types/product"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
 import Image from "next/image"
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export default function Product(props: Props) {
-    const [fetchedEvents] = useFetchedEvents()
+    const fetchedEvents = useFetchedEvents()
     const [latestEvent, setLatestEvent] = useState<NDKEvent>()
     const eventContent = latestEvent ? (JSON.parse(latestEvent.content) as ProductContentType) : null
 

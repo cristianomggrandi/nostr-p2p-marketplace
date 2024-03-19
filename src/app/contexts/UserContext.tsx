@@ -1,9 +1,9 @@
 "use client"
 
-import { NDKNip07Signer, NDKUser } from "@nostr-dev-kit/ndk"
+import { NDKUser } from "@nostr-dev-kit/ndk"
 import { createContext, useContext, useState } from "react"
 import { ContextProps } from "../types/ContextProps"
-import useNDK from "./NDKContext"
+import ndk from "../utils/ndk"
 
 type UserContextType = {
     user: NDKUser | null
@@ -15,24 +15,21 @@ const UserContext = createContext<UserContextType | null>(null)
 export function UserContextProvider(props: ContextProps) {
     const [user, setUser] = useState<NDKUser | null>(null)
 
-    const ndk = useNDK()
-
     const loginWithNIP07 = () => {
-        const nip07signer = new NDKNip07Signer()
-        ndk.signer = nip07signer
+        if (ndk.signer)
+            ndk.signer.user().then(user => {
+                if (user.npub) {
+                    user.fetchProfile().then(userProfile => {
+                        console.log("userProfile:", userProfile)
 
-        nip07signer.user().then(user => {
-            if (user.npub) {
-                user.fetchProfile().then(userProfile => {
-                    console.log("userProfile:", userProfile)
-
-                    if (userProfile) setUser(user)
-                    else throw new Error("User profile not found")
-                })
-            } else {
-                throw new Error("Failed to fetch for your user")
-            }
-        })
+                        if (userProfile) setUser(user)
+                        else throw new Error("User profile not found")
+                    })
+                } else {
+                    throw new Error("Failed to fetch for your user")
+                }
+            })
+        else throw new Error("No NDK NIP-07 Signer")
     }
 
     return <UserContext.Provider value={{ user, loginWithNIP07 }}>{props.children}</UserContext.Provider>

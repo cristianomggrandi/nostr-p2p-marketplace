@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Header from "./components/Header"
-import { NDKContextProvider } from "./contexts/NDKContext"
+import { EventsContextProvider } from "./contexts/EventsContext"
 import { UserContextProvider } from "./contexts/UserContext"
 import "./globals.css"
 
@@ -20,12 +20,12 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className + " " + "h-screen"}>
-                <NDKContextProvider>
+                <EventsContextProvider>
                     <UserContextProvider>
                         <Header />
                         {children}
                     </UserContextProvider>
-                </NDKContextProvider>
+                </EventsContextProvider>
             </body>
         </html>
     )
