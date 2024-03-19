@@ -49,10 +49,7 @@ export function useFetchedEvents(): [NDKEvent[], Dispatch<SetStateAction<NDKEven
             .fetchEvents({
                 kinds: NOSTR_NIP15_TYPES,
             })
-            .then(events => {
-                console.log("asdasd events finish")
-                context.setFetchedEvents(Array.from(events))
-            })
+            .then(events => context.setFetchedEvents(Array.from(events)))
 
     return [context.fetchedEvents, context.setFetchedEvents]
 }

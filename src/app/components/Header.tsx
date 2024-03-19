@@ -3,7 +3,7 @@ import HeaderUser from "./HeaderUser"
 
 export default function Header() {
     return (
-        <header className="h-16 bg-secondary text-white">
+        <header className="h-[10%] bg-secondary text-white">
             <nav className="flex flex-row items-center justify-around h-full">
                 <ul className="flex flex-row items-center justify-around w-full">
                     <li>

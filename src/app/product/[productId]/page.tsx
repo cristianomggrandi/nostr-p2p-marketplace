@@ -1,8 +1,10 @@
 "use client"
 
+import BitcoinIcon from "@/app/components/BitcoinIcon"
 import { useFetchedEvents } from "@/app/contexts/NDKContext"
 import { ProductContentType } from "@/app/types/product"
 import { NDKEvent } from "@nostr-dev-kit/ndk"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 
 type Props = {
@@ -46,9 +48,10 @@ export default function Product(props: Props) {
             else return prev
         }, matchingEventArray[0])
 
-        setLatestEvent(latestEvent)
-
-        localStorage.setItem(props.params.productId, JSON.stringify(await latestEvent.toNostrEvent()))
+        if (latestEvent) {
+            setLatestEvent(latestEvent)
+            localStorage.setItem(props.params.productId, JSON.stringify(await latestEvent.toNostrEvent()))
+        }
 
         console.log("latestEvent", latestEvent)
     }
@@ -59,15 +62,39 @@ export default function Product(props: Props) {
 
     if (!eventContent) return <div>No event</div>
 
+    const mainImage = eventContent.images ? eventContent.images[0] : null
+
     return (
-        <div className="grid grid-row">
-            <div></div>
+        <main className="h-[90%] grid grid-cols-2 items-center p-12 bg-primary text-secondary">
             <div>
-                <div>{eventContent.name}</div>
-                <div>{eventContent.description}</div>
-                <div>{eventContent.price}</div>
-                <div>{eventContent.currency}</div>
+                {eventContent.images && mainImage ? (
+                    // TODO: Create carousel for images
+                    <Image
+                        // TODO: Ugly as fuck
+                        loader={() => (eventContent.images ? eventContent.images[0] : (null as unknown as string))}
+                        src={eventContent.images[0]}
+                        alt={eventContent.name}
+                        width={480}
+                        height={480}
+                    />
+                ) : (
+                    <div className="flex justify-center">
+                        <BitcoinIcon width="180px" height="180px" />
+                    </div>
+                )}
             </div>
-        </div>
+            <div className="flex flex-col h-full justify-between">
+                <span className="text-4xl font-bold text-bitcoin">{eventContent.name}</span>
+                <span className="text-gray-300">{eventContent.description}</span>
+                <div className="flex gap-2">
+                    {eventContent.price ? (
+                        <>
+                            <span className="text-white">{eventContent.price ?? 10000}</span>
+                            <span className="text-bitcoin uppercase">{eventContent.currency}</span>
+                        </>
+                    ) : null}
+                </div>
+            </div>
+        </main>
     )
 }
